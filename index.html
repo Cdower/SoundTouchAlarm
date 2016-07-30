@@ -5,6 +5,11 @@
   <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <style>
+  button{
+    margin-left: 2%;
+  }
+  </style>
 </head>
 <title>Alarm</title>
 <body>
@@ -15,5 +20,21 @@
 </body>
 <script>
   var socket = io();
+  socket.on('new speaker', function(rinfo){
+    console.log(rinfo);
+    $('#list').append("<div class='row'><div class='col-md1'></div><div class='col-md6'> Speaker at "+rinfo.address+":  <button type='button' address='"+rinfo.address+"' class='getInfo btn btn-primary'> GET Info </button> </div></div>");
+  });
+
+  $('.getInfo').on('click', function(){
+    console.log("Info Button Clicked!");
+    var address = $(this).address;
+    $.ajax({
+      url:infoRequest,
+      data:address,
+      succes: function(data){
+        console.log(data);
+      },
+    });
+  })
 </script>
 </html>
