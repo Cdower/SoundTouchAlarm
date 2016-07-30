@@ -12,6 +12,7 @@
     "express": "^4.14.0",
     "mdns-js": "^0.5.0",
     "node-ssdp-lite": "^0.2.0",
-    "socket.io": "^1.4.8"
+    "socket.io": "^1.4.8",
+    "xml2js": "^0.4.17"
   }
 }
