@@ -1,0 +1,20 @@
+{
+  "name": "soundtouchalarm",
+  "description": "Alarm that will play music on a sound touch device at a specific time",
+  "main": "main.js",
+  "authors": [
+    "Chris Dower"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/Cdower/SoundTouchAlarm",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-timepicker": "^0.5.2"
+  }
+}
