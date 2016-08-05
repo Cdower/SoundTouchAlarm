@@ -1,10 +1,16 @@
 <!DOCTYPE html>
+<!--TODO: auto check current date
+TODO: send date codes
+TODO: lint code -->
 <html>
 <head>
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+  <link type="text/css" href='static/css/bootstrap-timepicker.min.css' />
   <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="/static/js/bootstrap-timepicker.min.js"></script>
   <style>
   button{
     margin-left: 2%;
@@ -13,28 +19,76 @@
 </head>
 <title>Alarm</title>
 <body>
-  <div>
-    Devices
-    <div id='list'></div>
+  <h3>Set alarm time and Days</h3>
+  <div class="input-group bootstrap-timepicker timepicker pull-right">
+      <input id="timepicker1" type="text" class="form-control input-small">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
   </div>
+  <div class='btn-group' data-toggle='buttons'>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Monday">Mon
+    </label>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Tuesday">Tue
+    </label>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Wednesday">Wed
+    </label>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Thursday">Thr
+    </label>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Friday">Fri
+    </label>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Saturday">Sat
+    </label>
+    <label class='btn btn-primary'>
+      <input type="checkbox" value="Sunday">Sun
+    </label>
+  </div>
+    <h4>Devices</h4>
+    <form>
+
+    </form>
+    <div id='list'></div>
 </body>
 <script>
+  $('#timepicker1').timepicker({
+    minuteStep: 5,
+    showInputs: false,
+    disableFocus: true
+  });
   var socket = io();
   socket.on('new speaker', function(rinfo){
     console.log(rinfo);
-    $('#list').append("<div class='row'><div class='col-md1'></div><div class='col-md6'> Speaker at "+rinfo.address+":  <button type='button' address='"+rinfo.address+"' class='getInfo btn btn-primary'> GET Info </button> </div></div>");
+    $('#list').append("<div class='row'><div class='col-md1'></div><div class='col-md6'> Speaker at "+rinfo.address+":  <button type='button' address='"+rinfo.address+"' class='setAlarm btn btn-primary'> Set Alarm on this Device </button> </div></div>");
   });
 
-  $('.getInfo').on('click', function(){
-    console.log("Info Button Clicked!");
+  $('.setAlarm').click(function(){
+    console.log("Alarm Button clicked!");
     var address = $(this).address;
     $.ajax({
-      url:infoRequest,
+      type: 'POST',
+      url:'/alarmSet',
       data:address,
       succes: function(data){
         console.log(data);
       },
     });
-  })
+  });
+
+  $(document).on('click', '.setAlarm', function(){
+    console.log("Alarm Button clicked!");
+    var address = $(this).address;
+    $.ajax({
+      type: 'POST',
+      url:'/alarmSet',
+      data:address,
+      succes: function(data){
+        console.log(data);
+      },
+    });
+  });
 </script>
 </html>
