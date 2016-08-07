@@ -5,12 +5,15 @@ var mdns = require('mdns-js')
 var httpServer = http.createServer(app);
 var io = require('socket.io')(httpServer);
 var parseString = require('xml2js').parseString;
-var browser = mdns.createBrowser();
+var browser = mdns.createBrowser(mdns.tcp('soundtouch'));
 var ssdp = require('node-ssdp-lite')
   , client = new ssdp();
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );
+//require mongodb
 
 ///TODO: store each device in a data base so that the user doesn't have to wait to populate list
-///TODO: use MDNS and SSDP
+///TODO: fix MDNS
 ///TODO: Send get request to /info of device when it is found before sending it to the user
 
 client.on('notify', function () {
@@ -20,11 +23,21 @@ client.on('notify', function () {
 //***********************************************
 //****************MDNS Block*********************
 browser.on('ready', function () {
-    browser.discover();
+  console.log("MDNS query started");
+  browser.discover();
 });
 
 browser.on('update', function (data) {
     console.log('data:', data);
+    for(var prop in data.type){
+      if(prop.name === 'soundtouch'){
+        console.log(data.addresses[0]);
+        if(global.address !== data.addresses[0]){
+            global.address = data.addresses[0];
+            emitSpeakerInfo(global.address);
+        }
+      }
+    }
 });
 //***********************************************
 var emitSpeakerInfo = function(address){
@@ -48,13 +61,14 @@ var emitSpeakerInfo = function(address){
 client.on('response', function inResponse(msg, rinfo) {
   console.log('Got a response to an m-search.');
   console.log(rinfo);
-  if(rinfo !== global.speaker){
-    global.speaker=rinfo;
+  if(rinfo.address !== global.address){
+    global.address=rinfo.address;
     emitSpeakerInfo(rinfo.address);
   }
 });
 
 client.search('urn:schemas-upnp-org:device:MediaRenderer:1');
+console.log('SSDP query');
 
 app.use('/static', express.static(__dirname+'/public/'));
 app.get('/', function (req, res) {
@@ -62,7 +76,8 @@ app.get('/', function (req, res) {
 });
 
 app.post('/alarmSet', function(req, res){
-  console.log('Recieved: ' + req);
+  console.log('Recieved:');
+  console.log(req.body);
 });
 
 ///InfoRequest may be depreciated
@@ -87,9 +102,8 @@ app.get('/infoRequest', function(req, res) {
 
 io.on('connection', function(socket){
   console.log('a user connected, searching');
-  client.search('urn:schemas-upnp-org:device:MediaRenderer:1');
-  if(global.speaker){
-    emitSpeakerInfo(global.speaker.address);
+  if(global.address){
+    emitSpeakerInfo(global.address);
     //io.emit('new speaker', global.speaker);
   }
 
