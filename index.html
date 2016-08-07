@@ -81,10 +81,12 @@ TODO: lint code -->
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
     var address = $(this).address;
+
+    console.log(address);
     $.ajax({
       type: 'POST',
       url:'/alarmSet',
-      data:address,
+      data:JSON.stringify(address),
       succes: function(data){
         console.log(data);
       },
