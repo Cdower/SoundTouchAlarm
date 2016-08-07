@@ -81,8 +81,8 @@ TODO: lint code -->
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
     var address = $(this).address;
-
     console.log(address);
+    //TODO: add time and day data from form and checkboxes
     $.ajax({
       type: 'POST',
       url:'/alarmSet',
