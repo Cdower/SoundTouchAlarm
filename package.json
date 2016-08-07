@@ -9,6 +9,7 @@
   "author": "Chris Dower",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "bower": "^1.7.9",
     "express": "^4.14.0",
     "mdns-js": "^0.5.0",
