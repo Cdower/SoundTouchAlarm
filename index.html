@@ -72,9 +72,9 @@ TODO: lint code -->
   socket.on('presets', function(presets){
     var stations = JSON.parse(presets);
     var address = stations.address;
-    //console.log(stations);
     for(i=0;i<stations.presets.preset.length;i++){
       console.log(stations.presets.preset[i]);
+      $("#"+address).append("<div id='test'>Test "+i+"</div>")
     }
   });
 
