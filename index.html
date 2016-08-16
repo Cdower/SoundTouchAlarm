@@ -67,17 +67,23 @@ TODO: lint code -->
     //console.log();
     var rinfo = JSON.parse(speakerInfo);
     console.log(rinfo);
-    if($("#"+rinfo.info.networkInfo[0].ipAddress[0]).length == 0){//element id does not exist
-      $('#list').append("<div class='row' id="+rinfo.info.networkInfo[0].ipAddress[0]+"><div class='col-md-1'>"+rinfo.info.type +' '+"</div><div class='col-md-6'> "+ rinfo.info.name+":  <button type='button' address='"+rinfo.info.networkInfo[0].ipAddress[0]+"' class='setAlarm btn btn-primary'> Set Alarm on this Device </button> </div></div>");
+    var idAddr =rinfo.info.networkInfo[0].ipAddress[0];
+    idAddr = idAddr.replace(/\./g,'');
+    if($("#"+idAddr).length == 0){//element id does not exist
+      $('#list').append("<div class='row' id="+idAddr+"><div class='col-md-1'>"+rinfo.info.type +' '+"</div><div class='col-md-6'> "+ rinfo.info.name+":  <button type='button' address='"+rinfo.info.networkInfo[0].ipAddress[0]+"' class='setAlarm btn btn-primary'> Set Alarm on this Device </button> </div></div>");
     }else{ console.log("repeat recieved");}//TODO: else is test code, remove later
   });
 
   socket.on('presets', function(presets){
     var stations = JSON.parse(presets);
-    var address = stations.address;
+    var idAddr = stations.address;
+    idAddr = idAddr.replace(/\./g,'');
+    $('#'+idAddr).append("<div class='btn-group' id='"+idAddr+"_presets' data-toggle='buttons'></div>");
     for(i=0;i<stations.presets.preset.length;i++){
+      //TODO: insert Preset name as text, souce as attribute, and preset number
       console.log(stations.presets.preset[i]);
-      $("#"+address).append("<div id='test'>Test "+i+"</div>")
+      //console.log("#"+idAddr);
+      $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
     }
   });
 
@@ -87,6 +93,7 @@ TODO: lint code -->
     console.log($('#alarmTimeForm').serialize());
   })
 
+  /*
   $('.setAlarm').click(function(){
     console.log("Alarm Button clicked!");
     var address = $(this).address;
@@ -96,28 +103,25 @@ TODO: lint code -->
       "time": $('#timepicker').val(),
       "daysSet": $('#alarmTimeForm').serialize()
     };
-    $.post('/alarmSet', data, function(res){
+    $.post('/alarmSet', JSON.stringify(data), function(res){
       $console.log(res);
     });
-    /*$.ajax({
-      type: 'POST',
-      url:'/alarmSet',
-      data:address,
-      succes: function(data){
-        console.log(data);
-      },
-    });/**/
   });
-
+*/
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
     var address = this.getAttribute('address');
-    console.log(this.getAttribute('address'));
+    var alarmData = {
+      "addr": address,
+      "time": $('#timepicker').val(),
+      "daysSet": $('#alarmTimeForm').serialize()
+    };
+    //console.log(this.getAttribute('address'));
     //TODO: add time and day data from form and checkboxes
     $.ajax({
       type: 'POST',
       url:'/alarmSet',
-      data:JSON.stringify(address),
+      data:JSON.stringify(alarmData),
       success: function(data){
         console.log(data);
       },
