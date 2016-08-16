@@ -43,6 +43,7 @@ browser.on('update', function (data) {
     }
 });
 //***********************************************
+//************AJAX request to speaker************
 var emitSpeakerInfo = function(address){
   var options = {
     host: address,
@@ -52,7 +53,7 @@ var emitSpeakerInfo = function(address){
   http.get(options, function(res) {
     res.on('data', function (chunk) {
       parseString(chunk, function(err, result){
-        console.log(result);
+        //console.log(result);
         io.emit('new speaker', JSON.stringify(result)); ///TODO: Store in DB
       });
     });
@@ -67,7 +68,7 @@ var emitSpeakerInfo = function(address){
   http.get(options2, function(res) {
     res.on('data', function (chunk) {
       parseString(chunk, function(err, result){
-        console.log(result);
+        //console.log(result);
         result.address = address;
         io.emit('presets', JSON.stringify(result)); ///TODO: Store in DB
       });
@@ -76,6 +77,30 @@ var emitSpeakerInfo = function(address){
     console.log("Got error: " + e.message);
   });
 }
+
+function setVolume(address, level) {//TODO: call this function asynchronously, increeasing volume every x seconds until level reaches 100 or another set amount
+  var xmlData = "<volume>"+level+"</volume>";
+  console.log(xmlData);
+  var options = {
+    host: address,
+    port: 8090,
+    path: '/volume',
+    method:'POST',
+    headers:{ 'Content-Type':'application/xml'},
+    body: xmlData
+  };
+  http.request(options, function(res){
+    res.on('data', function(chunk){
+      console.log("Volume Res: "+chunk);
+    })
+  }).on('error', function(e){
+    console.log("Got error: " + e.message);
+  });
+}
+
+
+
+//*************************************************
 
 client.on('response', function inResponse(msg, rinfo) {
   console.log('Got a response to an m-search.');
@@ -96,7 +121,9 @@ app.get('/', function (req, res) {
 
 app.post('/alarmSet', function(req, res){
   console.log('Recieved:');
-  console.log("Do Something: " + req.body.addr);
+  console.log("Do Something: ");
+  console.log(req.body);
+  setVolume(req.body.addr, 50);
   res.send("Success!");
 });
 
