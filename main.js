@@ -10,10 +10,13 @@ var ssdp = require('node-ssdp-lite')
   , client = new ssdp();
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 //require mongodb
 
 ///TODO: store each device in a data base so that the user doesn't have to wait to populate list
-///TODO: fix MDNS
+///TODO: remove ssdp, MDNS works so much better
 ///TODO: Send get request to /info of device when it is found before sending it to the user
 
 client.on('notify', function () {
@@ -49,8 +52,24 @@ var emitSpeakerInfo = function(address){
   http.get(options, function(res) {
     res.on('data', function (chunk) {
       parseString(chunk, function(err, result){
-        //console.log('BODY: ' + result);
+        console.log(result);
         io.emit('new speaker', JSON.stringify(result)); ///TODO: Store in DB
+      });
+    });
+  }).on('error', function(e) {
+    console.log("Got error: " + e.message);
+  });
+  options2= {
+    host: address,
+    port: 8090,
+    path: '/presets'
+  };
+  http.get(options2, function(res) {
+    res.on('data', function (chunk) {
+      parseString(chunk, function(err, result){
+        console.log(result);
+        result.address = address;
+        io.emit('presets', JSON.stringify(result)); ///TODO: Store in DB
       });
     });
   }).on('error', function(e) {
@@ -77,31 +96,12 @@ app.get('/', function (req, res) {
 
 app.post('/alarmSet', function(req, res){
   console.log('Recieved:');
-  console.log(req.body);
+  console.log("Do Something: " + req.body.addr);
+  res.send("Success!");
 });
 
-///InfoRequest may be depreciated
-/*
-app.get('/infoRequest', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
-  console.log('info requested');
-  var options = {
-    host: '192.168.0.6',
-    port: 8090,
-    path: '/info'
-  };
-  http.get(options, function(res) {
-    console.log(res);
-    res.on('data', function (chunk) {
-      console.log('BODY: ' + chunk);
-    });
-    }).on('error', function(e) {
-      console.log("Got error: " + e.message);
-  });
-});*/
-
 io.on('connection', function(socket){
-  console.log('a user connected, searching');
+  console.log('a user connected');
   if(global.address){
     emitSpeakerInfo(global.address);
     //io.emit('new speaker', global.speaker);
