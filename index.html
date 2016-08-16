@@ -83,7 +83,7 @@ TODO: lint code -->
       //TODO: insert Preset name as text, souce as attribute, and preset number
       console.log(stations.presets.preset[i]);
       //console.log("#"+idAddr);
-      $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
+      $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input sourceAccount="+stations.presets.preset[i].ContentItem[0].$.sourceAccount+" location="+stations.presets.preset[i].ContentItem[0].$.location+" itemName="+stations.presets.preset[i].ContentItem[0].itemName[0]+" source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
     }
   });
 
@@ -96,7 +96,7 @@ TODO: lint code -->
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
     var address = this.getAttribute('address');
-    //var idAddr = "#"+address.replace(/\./g,'') + "_presets:checked"; //TODO:use id instead of input name to find checked radio button for preset
+    var idAddr = "#"+address.replace(/\./g,'') + "_presets:checked"; //TODO:use id instead of input name to find checked radio button for preset
     var alarmData = {
       "addr": address,
       "time": $('#timepicker').val(),
