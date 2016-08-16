@@ -83,7 +83,7 @@ TODO: lint code -->
       //TODO: insert Preset name as text, souce as attribute, and preset number
       console.log(stations.presets.preset[i]);
       //console.log("#"+idAddr);
-      $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
+      $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
     }
   });
 
@@ -93,35 +93,21 @@ TODO: lint code -->
     console.log($('#alarmTimeForm').serialize());
   })
 
-  /*
-  $('.setAlarm').click(function(){
-    console.log("Alarm Button clicked!");
-    var address = $(this).address;
-    //var schedule = [$('#timepicker').val(), false,];//[time, sun,mon,tues,weds,thurs,fri,sat]
-    var data = {
-      "addr": address,
-      "time": $('#timepicker').val(),
-      "daysSet": $('#alarmTimeForm').serialize()
-    };
-    $.post('/alarmSet', JSON.stringify(data), function(res){
-      $console.log(res);
-    });
-  });
-*/
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
     var address = this.getAttribute('address');
+    //var idAddr = "#"+address.replace(/\./g,'') + "_presets:checked"; //TODO:use id instead of input name to find checked radio button for preset
     var alarmData = {
       "addr": address,
       "time": $('#timepicker').val(),
-      "daysSet": $('#alarmTimeForm').serialize()
+      "daysSet": $('#alarmTimeForm').serialize(),
+      "preset": $('input[name=presetList]:checked').val()
     };
-    //console.log(this.getAttribute('address'));
-    //TODO: add time and day data from form and checkboxes
+    //TODO: add preset selection
     $.ajax({
       type: 'POST',
       url:'/alarmSet',
-      data:JSON.stringify(alarmData),
+      data:alarmData,
       success: function(data){
         console.log(data);
       },
