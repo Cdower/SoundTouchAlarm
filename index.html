@@ -20,33 +20,36 @@ TODO: lint code -->
 <title>Alarm</title>
 <body>
   <h3>Set alarm time and Days</h3>
-  <div class="input-group bootstrap-timepicker timepicker pull-right">
-      <input id="timepicker1" type="text" class="form-control input-small">
-      <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-  </div>
-  <div class='btn-group' data-toggle='buttons'>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Monday">Mon
-    </label>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Tuesday">Tue
-    </label>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Wednesday">Wed
-    </label>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Thursday">Thr
-    </label>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Friday">Fri
-    </label>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Saturday">Sat
-    </label>
-    <label class='btn btn-primary'>
-      <input type="checkbox" value="Sunday">Sun
-    </label>
-  </div>
+  <form id='alarmTimeForm'>
+    <div class="input-group bootstrap-timepicker timepicker pull-right">
+        <input id="timepicker" type="text" class="form-control input-small">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+    </div>
+    <div class='btn-group' data-toggle='buttons'>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Sunday">Sun
+      </label>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Monday">Mon
+      </label>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Tuesday">Tue
+      </label>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Wednesday">Wed
+      </label>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Thursday">Thr
+      </label>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Friday">Fri
+      </label>
+      <label class='btn btn-primary'>
+        <input type="checkbox" name="Saturday">Sat
+      </label>
+    </div>
+  </form>
+  <button class='btn' id='testSubmit'>Submit</button>
     <h4>Devices</h4>
     <form>
 
@@ -54,7 +57,7 @@ TODO: lint code -->
     <div id='list'></div>
 </body>
 <script>
-  $('#timepicker1').timepicker({
+  $('#timepicker').timepicker({
     minuteStep: 5,
     showInputs: false,
     disableFocus: true
@@ -78,10 +81,22 @@ TODO: lint code -->
     }
   });
 
+////Test code. Remove when finished
+  $('#testSubmit').on('click', function(e){
+    e.preventDefault();
+    console.log($('#alarmTimeForm').serialize());
+  })
+
   $('.setAlarm').click(function(){
     console.log("Alarm Button clicked!");
     var address = $(this).address;
-    $.post('/alarmSet', {"addr": address}, function(res){
+    //var schedule = [$('#timepicker').val(), false,];//[time, sun,mon,tues,weds,thurs,fri,sat]
+    var data = {
+      "addr": address,
+      "time": $('#timepicker').val(),
+      "daysSet": $('#alarmTimeForm').serialize()
+    };
+    $.post('/alarmSet', data, function(res){
       $console.log(res);
     });
     /*$.ajax({
