@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <!--TODO: auto check current date
 TODO: send date codes
-TODO: lint code -->
+TODO: lint code
+TODO: max 6 presets-->
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -76,14 +77,18 @@ TODO: lint code -->
 
   socket.on('presets', function(presets){
     var stations = JSON.parse(presets);
+    //console.log(stations);
     var idAddr = stations.address;
     idAddr = idAddr.replace(/\./g,'');
-    $('#'+idAddr).append("<div class='btn-group' id='"+idAddr+"_presets' data-toggle='buttons'></div>");
-    for(i=0;i<stations.presets.preset.length;i++){
-      //TODO: insert Preset name as text, souce as attribute, and preset number
-      console.log(stations.presets.preset[i]);
-      //console.log("#"+idAddr);
-      $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input sourceAccount="+stations.presets.preset[i].ContentItem[0].$.sourceAccount+" location="+stations.presets.preset[i].ContentItem[0].$.location+" itemName="+stations.presets.preset[i].ContentItem[0].itemName[0]+" source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
+    if($("#"+idAddr+"_presets").length == 0){
+      console.log("Adding Presets");
+      $('#'+idAddr).append("<div class='btn-group' id='"+idAddr+"_presets' data-toggle='buttons'></div>");
+      for(i=0;i<stations.presets.preset.length;i++){
+        //TODO: insert Preset name as text, souce as attribute, and preset number
+        console.log(stations.presets.preset[i]);
+        //console.log("#"+idAddr);
+        $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input sourceAccount="+stations.presets.preset[i].ContentItem[0].$.sourceAccount+" location="+stations.presets.preset[i].ContentItem[0].$.location+" itemName="+stations.presets.preset[i].ContentItem[0].itemName[0]+" source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
+      }
     }
   });
 

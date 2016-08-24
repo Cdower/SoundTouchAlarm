@@ -53,34 +53,35 @@ var emitSpeakerInfo = function(address){
   http.get(options, function(res) {
     res.on('data', function (chunk) {
       parseString(chunk, function(err, result){
-        //console.log(result);
+        console.log("Emitting Speaker Info");
         io.emit('new speaker', JSON.stringify(result)); ///TODO: Store in DB
+        options2= {
+          host: address,
+          port: 8090,
+          path: '/presets'
+        };
+        http.get(options2, function(res) {
+          res.on('data', function (chunk) {
+            parseString(chunk, function(err, result){
+              console.log("Emitting Presets");
+              result.address = address;
+              io.emit('presets', JSON.stringify(result)); ///TODO: Store in DB
+            });
+          });
+        }).on('error', function(e) {
+          console.log("Got error: " + e.message);
+        });
       });
     });
   }).on('error', function(e) {
     console.log("Got error: " + e.message);
   });
-  options2= {
-    host: address,
-    port: 8090,
-    path: '/presets'
-  };
-  http.get(options2, function(res) {
-    res.on('data', function (chunk) {
-      parseString(chunk, function(err, result){
-        //console.log(result);
-        result.address = address;
-        io.emit('presets', JSON.stringify(result)); ///TODO: Store in DB
-      });
-    });
-  }).on('error', function(e) {
-    console.log("Got error: " + e.message);
-  });
+
 }
 
 function setVolume(address, level) {//TODO: call this function asynchronously, increeasing volume every x seconds until level reaches 100 or another set amount
   var xmlData = "<volume> "+level+" </volume>";
-  console.log(xmlData);
+  //console.log(xmlData);
   var options = {
     host: address,
     port: 8090,
