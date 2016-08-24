@@ -8,6 +8,7 @@ var parseString = require('xml2js').parseString;
 var browser = mdns.createBrowser(mdns.tcp('soundtouch'));
 var ssdp = require('node-ssdp-lite')
   , client = new ssdp();
+var schedule = require('node-schedule');
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -103,7 +104,51 @@ function setVolume(address, level) {//TODO: call this function asynchronously, i
   req.end('xmlbody');
 }
 
+function setAlarm(body){///setup node schedule to call runAlarm
+  body.time=body.time.split(':');
+  var s = schedule.scheduleJob(body.time[1] + ' ' + body.time[0] + ' * * ' + body.daysSet, function(){
+    setVolume(body.addr, 25);
+    runAlarm(body);
+    setTimeout(function(){
+      setVolume(body.addr, 30)
+    }, 6000);
+    setTimeout(function(){
+      setVolume(body.addr, 35)
+    }, 9000);
+    setTimeout(function(){
+      setVolume(body.addr, 40)
+    }, 12000);
+    setTimeout(function(){
+      setVolume(body.addr, 45)
+    }, 15000);
+    setTimeout(function(){
+      setVolume(body.addr, 50)
+    }, 18000);
+  })//min hour * * days_of_the_week
+}
 
+function runAlarm(body){///make series of AJAX calls to play music and set volume etc
+  var xmlData = "<ContentItem source=" + body.source + " sourceAccount=" + body.sourceAccount + " location=" + body.location +"><itemName>"+body.itemName+"</itemName></ContentItem>";
+  console.log(xmlData);
+  var options = {
+    host: body.addr,
+    port: 8090,
+    path: '/select',
+    method: 'POST',
+    headers: { 'Content-Type': 'text/xml',
+      'Content-Length': Buffer.byteLength(xmlData)
+    }
+  };
+  var req = http.request(options, function(res){
+    res.on('data', function(chunk){
+      console.log('Alarm Res: ' + chunk);
+    })
+  }).on('error', function(e){
+    console.log("Got Error: " + e.message);
+  });
+  req.write(xmlData);
+  req.end('xmlbody');
+}
 
 //*************************************************
 //*****************SSPD Block**********************
@@ -131,7 +176,8 @@ app.post('/alarmSet', function(req, res){
   console.log('Recieved:');
   console.log("Do Something: ");
   console.log(req.body);
-  setVolume(req.body.addr, 50);
+  setAlarm(req.body);
+  setVolume(req.body.addr, 25);
   res.send("Success!");
 });
 
