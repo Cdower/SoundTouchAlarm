@@ -85,18 +85,19 @@ TODO: max 6 presets-->
       $('#'+idAddr).append("<div class='btn-group' id='"+idAddr+"_presets' data-toggle='buttons'></div>");
       for(i=0;i<stations.presets.preset.length;i++){
         //TODO: insert Preset name as text, souce as attribute, and preset number
-        console.log(stations.presets.preset[i]);
+        console.log("Item Name: " + stations.presets.preset[i].ContentItem[0].itemName[0]);
         //console.log("#"+idAddr);
-        $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input sourceAccount="+stations.presets.preset[i].ContentItem[0].$.sourceAccount+" location="+stations.presets.preset[i].ContentItem[0].$.location+" itemName="+stations.presets.preset[i].ContentItem[0].itemName[0]+" source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
+        $("#"+idAddr+"_presets").append("<label class='btn btn-primary'> <input sourceAccount="+stations.presets.preset[i].ContentItem[0].$.sourceAccount+" location="+stations.presets.preset[i].ContentItem[0].$.location+" itemName="+stations.presets.preset[i].ContentItem[0].itemName[0].replace(/\s/g,'_')+" source="+stations.presets.preset[i].ContentItem[0].$.source+" type='radio' name='presetList' value="+stations.presets.preset[i].$.id+">"+stations.presets.preset[i].ContentItem[0].itemName[0]+"</label>");
       }
     }
   });
 
-////Test code. Remove when finished
+////Test code. Remove when finished*************
   $('#testSubmit').on('click', function(e){
     e.preventDefault();
     console.log($('#alarmTimeForm').serialize());
   })
+  ///*******************************************
 
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
@@ -106,6 +107,10 @@ TODO: max 6 presets-->
       "addr": address,
       "time": $('#timepicker').val(),
       "daysSet": $('#alarmTimeForm').serialize(),
+      "source": $('input[name=presetList]:checked').attr('source'),
+      "sourceAccount": $('input[name=presetList]:checked').attr('sourceAccount'),
+      "location": $('input[name=presetList]:checked').attr('location'),
+      "itemName": $('input[name=presetList]:checked').attr('itemName').replace(/_/g,' '),
       "preset": $('input[name=presetList]:checked').val()
     };
     //TODO: add preset selection
