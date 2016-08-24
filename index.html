@@ -8,7 +8,9 @@ TODO: send time code in 24 hour format?-->
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
   <link type="text/css" href='static/css/bootstrap-timepicker.min.css' />
-  <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
   <script src="/static/js/bootstrap-timepicker.min.js"></script>
@@ -84,7 +86,7 @@ TODO: send time code in 24 hour format?-->
     idAddr = idAddr.replace(/\./g,'');
     if($("#"+idAddr+"_presets").length == 0){
       console.log("Adding Presets");
-      $('#'+idAddr).append("<div class='btn-group' id='"+idAddr+"_presets' data-toggle='buttons'></div>");
+      $('#'+idAddr).append("<div class='btn-group col-md-6 col-md-offset-1' id='"+idAddr+"_presets' data-toggle='buttons'></div>");
       for(i=0;i<stations.presets.preset.length;i++){
         //TODO: insert Preset name as text, souce as attribute, and preset number
         console.log("Item Name: " + stations.presets.preset[i].ContentItem[0].itemName[0]);
@@ -141,5 +143,6 @@ TODO: send time code in 24 hour format?-->
       },
     });
   });
+
 </script>
 </html>

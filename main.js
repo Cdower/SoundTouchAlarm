@@ -107,22 +107,22 @@ function setVolume(address, level) {//TODO: call this function asynchronously, i
 function setAlarm(body){///setup node schedule to call runAlarm
   body.time=body.time.split(':');
   var s = schedule.scheduleJob(body.time[1] + ' ' + body.time[0] + ' * * ' + body.daysSet, function(){
-    setVolume(body.addr, 25);
+    setVolume(body.addr, 15);
     runAlarm(body);
     setTimeout(function(){
-      setVolume(body.addr, 30)
+      setVolume(body.addr, 20)
     }, 6000);
     setTimeout(function(){
-      setVolume(body.addr, 35)
+      setVolume(body.addr, 25)
     }, 9000);
     setTimeout(function(){
-      setVolume(body.addr, 40)
+      setVolume(body.addr, 30)
     }, 12000);
     setTimeout(function(){
-      setVolume(body.addr, 45)
+      setVolume(body.addr, 35)
     }, 15000);
     setTimeout(function(){
-      setVolume(body.addr, 50)
+      setVolume(body.addr, 40)
     }, 18000);
   })//min hour * * days_of_the_week
 }
@@ -174,10 +174,8 @@ app.get('/', function (req, res) {
 
 app.post('/alarmSet', function(req, res){
   console.log('Recieved:');
-  console.log("Do Something: ");
   console.log(req.body);
   setAlarm(req.body);
-  setVolume(req.body.addr, 25);
   res.send("Success!");
 });
 
