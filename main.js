@@ -79,28 +79,33 @@ var emitSpeakerInfo = function(address){
 }
 
 function setVolume(address, level) {//TODO: call this function asynchronously, increeasing volume every x seconds until level reaches 100 or another set amount
-  var xmlData = "<volume>"+level+"</volume>";
+  var xmlData = "<volume> "+level+" </volume>";
   console.log(xmlData);
   var options = {
     host: address,
     port: 8090,
     path: '/volume',
     method:'POST',
-    headers:{ 'Content-Type':'application/xml'},
-    body: xmlData
+    headers:{ 'Content-Type': 'text/xml',
+      'Content-Length': Buffer.byteLength(xmlData)
+    }
   };
-  http.request(options, function(res){
+
+  var req = http.request(options, function(res){
     res.on('data', function(chunk){
       console.log("Volume Res: "+chunk);
     })
   }).on('error', function(e){
     console.log("Got error: " + e.message);
   });
+  req.write(xmlData);
+  req.end('xmlbody');
 }
 
 
 
 //*************************************************
+//*****************SSPD Block**********************
 
 client.on('response', function inResponse(msg, rinfo) {
   console.log('Got a response to an m-search.');
@@ -113,6 +118,8 @@ client.on('response', function inResponse(msg, rinfo) {
 
 client.search('urn:schemas-upnp-org:device:MediaRenderer:1');
 console.log('SSDP query');
+
+//*************************************************
 
 app.use('/static', express.static(__dirname+'/public/'));
 app.get('/', function (req, res) {
