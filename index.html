@@ -2,7 +2,7 @@
 <!--TODO: auto check current date
 TODO: send date codes
 TODO: lint code
-TODO: max 6 presets-->
+TODO: send time code in 24 hour format?-->
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -28,25 +28,25 @@ TODO: max 6 presets-->
     </div>
     <div class='btn-group' data-toggle='buttons'>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Sunday">Sun
+        <input type="checkbox" name="Sunday" value="0">Sun
       </label>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Monday">Mon
+        <input type="checkbox" name="Monday" value="1">Mon
       </label>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Tuesday">Tue
+        <input type="checkbox" name="Tuesday" value="2">Tue
       </label>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Wednesday">Wed
+        <input type="checkbox" name="Wednesday" value="3">Wed
       </label>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Thursday">Thr
+        <input type="checkbox" name="Thursday" value="4">Thr
       </label>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Friday">Fri
+        <input type="checkbox" name="Friday" value="5">Fri
       </label>
       <label class='btn btn-primary'>
-        <input type="checkbox" name="Saturday">Sat
+        <input type="checkbox" name="Saturday" value="6">Sat
       </label>
     </div>
   </form>
@@ -59,9 +59,11 @@ TODO: max 6 presets-->
 </body>
 <script>
   $('#timepicker').timepicker({
-    minuteStep: 5,
-    showInputs: false,
-    disableFocus: true
+    template: 'dropdown',
+    minuteStep: 1,
+    showInputs: true,
+    disableFocus: true,
+    showMeridian: false
   });
   var socket = io();
   socket.on('new speaker', function(speakerInfo){
@@ -95,18 +97,34 @@ TODO: max 6 presets-->
 ////Test code. Remove when finished*************
   $('#testSubmit').on('click', function(e){
     e.preventDefault();
-    console.log($('#alarmTimeForm').serialize());
-  })
+    var data = $('#alarmTimeForm').serializeArray();
+    console.log(data);
+    var testString = '';
+    $.each(data, function(index, value){
+      if(index == 0){
+        testString += value.value;
+      }else{
+        testString += ','+value.value;
+      }
+      //console.log(index + ": " + value );
+    });
+    console.log(testString);
+  });
   ///*******************************************
 
   $(document).on('click', '.setAlarm', function(){
     console.log("Alarm Button clicked!");
     var address = this.getAttribute('address');
+    var days = '';
+    $.each($('#alarmTimeForm').serializeArray(), function(index, value){
+      if(index == 0){ days += value.value; }
+      else{ days += ','+value.value; }
+    });
     var idAddr = "#"+address.replace(/\./g,'') + "_presets:checked"; //TODO:use id instead of input name to find checked radio button for preset
     var alarmData = {
       "addr": address,
       "time": $('#timepicker').val(),
-      "daysSet": $('#alarmTimeForm').serialize(),
+      "daysSet": days,
       "source": $('input[name=presetList]:checked').attr('source'),
       "sourceAccount": $('input[name=presetList]:checked').attr('sourceAccount'),
       "location": $('input[name=presetList]:checked').attr('location'),
