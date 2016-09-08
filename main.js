@@ -146,7 +146,8 @@ function runAlarm(body){///make series of AJAX calls to play music and set volum
 
 //*************************************************
 
-app.use('/static', express.static(__dirname+'/bower_components/'));
+app.use('/static', express.static(__dirname+'/bower_components'));
+
 app.get('/', function (req, res) {
   res.sendFile( __dirname + '/index.html');
 });
