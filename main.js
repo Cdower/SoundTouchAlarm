@@ -27,15 +27,18 @@ browser.on('ready', function () {
 
 browser.on('update', function (data) {
     console.log('data:', data);
-    for(var prop in data.type){
-      if(prop.name === 'soundtouch'){
+    console.log(data.type[0].name);
+    //for(var prop in data.type){
+
+      if(data.type[0].name === 'soundtouch'){
+        //console.log("soundtouch");
         console.log(data.addresses[0]);
         if(global.address !== data.addresses[0]){
             global.address = data.addresses[0];
             emitSpeakerInfo(global.address);
         }
       }
-    }
+    //}
 });
 //***********************************************
 //************AJAX request to speaker************
@@ -143,6 +146,21 @@ function runAlarm(body){///make series of AJAX calls to play music and set volum
   req.write(xmlData);
   req.end('xmlbody');
 }
+
+//*************************************************
+//*****************SSPD Block**********************
+/*
+client.on('response', function inResponse(msg, rinfo) {
+  console.log('Got a response to an m-search.');
+  console.log(rinfo);
+  if(rinfo.address !== global.address){
+    global.address=rinfo.address;
+    emitSpeakerInfo(rinfo.address);
+  }
+});*/
+
+//client.search('urn:schemas-upnp-org:device:MediaRenderer:1');
+//console.log('SSDP query');
 
 //*************************************************
 
