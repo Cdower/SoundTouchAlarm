@@ -25,7 +25,7 @@ TODO: send time code in 24 hour format?-->
   <h3>Set alarm time and Days</h3>
   <form id='alarmTimeForm'>
     <div class="input-group bootstrap-timepicker timepicker pull-right">
-        <input id="timepicker" type="text" class="form-control input-small">
+        <input id="timepicker1" type="text" class="form-control input-small">
         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
     </div>
     <div class='btn-group' data-toggle='buttons'>
@@ -60,7 +60,7 @@ TODO: send time code in 24 hour format?-->
     <div id='list'></div>
 </body>
 <script>
-  $('#timepicker').timepicker({
+  $("#timepicker1").timepicker({
     template: 'dropdown',
     minuteStep: 1,
     showInputs: true,
